@@ -24,3 +24,32 @@ const DEFAULT_VALUES = {
   seed: "42",
   scheduler: "K_EULER"
 };
+
+const CONFIG_STORAGE_KEY = 'apiConfig';
+
+function applyConfig(cfg) {
+  if (cfg && cfg.service === 'runpod' && cfg.runpodId && cfg.runpodKey) {
+    CONFIG.API_KEY = cfg.runpodKey;
+    CONFIG.ENDPOINT = `https://api.runpod.ai/v2/${cfg.runpodId}/run`;
+    CONFIG.STATUS_ENDPOINT = `https://api.runpod.ai/v2/${cfg.runpodId}/status/`;
+  }
+}
+
+function loadSavedConfig() {
+  try {
+    const stored = localStorage.getItem(CONFIG_STORAGE_KEY);
+    if (stored) {
+      const cfg = JSON.parse(stored);
+      applyConfig(cfg);
+    }
+  } catch (e) {
+    console.error('Failed to load config', e);
+  }
+}
+
+function saveConfig(cfg) {
+  localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(cfg));
+  applyConfig(cfg);
+}
+
+loadSavedConfig();
