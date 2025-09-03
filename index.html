@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1 id="title">AI Image Generator</h1>
+        <div class="language-selector">
+          <select id="languageSelect" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="sv">Svenska</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
+      </header>
+      
+      <div class="form-section">
+        <h3 id="promptSection">📝 Prompt & Negative Prompt</h3>
+        <div class="form-group">
+          <label for="prompt" class="tooltip" data-tooltip-key="positivePromptTooltip">
+            <span id="positivePromptLabel">Positive prompt:</span>
+            <span class="tooltiptext"></span>
+          </label>
+          <textarea id="prompt" placeholder=""></textarea>
+        </div>
+        <div class="form-group">
+          <label for="negativePrompt" class="tooltip" data-tooltip-key="negativePromptTooltip">
+            <span id="negativePromptLabel">Negative prompt:</span>
+            <span class="tooltiptext"></span>
+          </label>
+          <textarea id="negativePrompt" placeholder=""></textarea>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 id="imageSettingsSection">📐 Image Size & Count</h3>
+        <div class="two-column">
+          <div class="form-group">
+            <label for="width" class="tooltip" data-tooltip-key="widthTooltip">
+              <span id="widthLabel">Width:</span>
+              <span class="tooltiptext"></span>
+            </label>
+            <select id="width">
+              <option value="512">512px</option>
+              <option value="768">768px</option>
+              <option value="1024" selected>1024px</option>
+              <option value="1280">1280px</option>
+              <option value="1536">1536px</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="height" class="tooltip" data-tooltip-key="heightTooltip">
+              <span id="heightLabel">Height:</span>
+              <span class="tooltiptext"></span>
+            </label>
+            <select id="height">
+              <option value="512">512px</option>
+              <option value="768">768px</option>
+              <option value="1024" selected>1024px</option>
+              <option value="1280">1280px</option>
+              <option value="1536">1536px</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="numImages" class="tooltip" data-tooltip-key="numImagesTooltip">
+            <span id="numImagesLabel">Number of images:</span>
+            <span class="tooltiptext"></span>
+          </label>
+          <input type="number" id="numImages" value="1" min="1" max="4">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 id="generationParamsSection">⚙️ Generation Parameters</h3>
+        <div class="three-column">
+          <div class="form-group">
+            <label for="numInferenceSteps" class="tooltip" data-tooltip-key="inferenceStepsTooltip">
+              <span id="inferenceStepsLabel">Inference Steps:</span>
+              <span class="tooltiptext"></span>
+            </label>
+            <div class="range-group">
+              <input type="range" id="numInferenceSteps" min="10" max="50" value="25">
+              <span class="range-value" id="numInferenceStepsValue">25</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="refinerInferenceSteps" class="tooltip" data-tooltip-key="refinerStepsTooltip">
+              <span id="refinerStepsLabel">Refiner Steps:</span>
+              <span class="tooltiptext"></span>
+            </label>
+            <div class="range-group">
+              <input type="range" id="refinerInferenceSteps" min="10" max="100" value="50">
+              <span class="range-value" id="refinerInferenceStepsValue">50</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="guidanceScale" class="tooltip" data-tooltip-key="guidanceScaleTooltip">
+              <span id="guidanceScaleLabel">Guidance Scale:</span>
+              <span class="tooltiptext"></span>
+            </label>
+            <div class="range-group">
+              <input type="range" id="guidanceScale" min="1" max="20" step="0.5" value="7.5">
+              <span class="range-value" id="guidanceScaleValue">7.5</span>
+            </div>
+          </div>
+        </div>
+        <div class="three-column">
+          <div class="form-group">
+            <label for="strength" class="tooltip" data-tooltip-key="strengthTooltip">
+              <span id="strengthLabel">Strength:</span>
+              <span class="tooltiptext"></span>
+            </label>
+            <div class="range-group">
+              <input type="range" id="strength" min="0" max="1" step="0.1" value="0.3">
+              <span class="range-value" id="strengthValue">0.3</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="highNoiseFrac" class="tooltip" data-tooltip-key="noiseFractionTooltip">
+              <span id="noiseFractionLabel">High Noise Fraction:</span>
+              <span class="tooltiptext"></span>
+            </label>
+            <div class="range-group">
+              <input type="range" id="highNoiseFrac" min="0" max="1" step="0.1" value="0.8">
+              <span class="range-value" id="highNoiseFracValue">0.8</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="seed" class="tooltip" data-tooltip-key="seedTooltip">
+              <span id="seedLabel">Seed:</span>
+              <span class="tooltiptext"></span>
+            </label>
+            <input type="number" id="seed" value="42" min="0" max="999999">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="scheduler" class="tooltip" data-tooltip-key="schedulerTooltip">
+            <span id="schedulerLabel">Scheduler:</span>
+            <span class="tooltiptext"></span>
+          </label>
+          <select id="scheduler">
+            <option value="K_EULER" selected>K_EULER</option>
+            <option value="K_EULER_ANCESTRAL">K_EULER_ANCESTRAL</option>
+            <option value="DDIM">DDIM</option>
+            <option value="DPMSolverMultistep">DPMSolverMultistep</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 id="presetsSection">🎨 Presets</h3>
+        <div class="preset-buttons">
+          <button class="preset-btn" onclick="loadPreset('portrait')" id="portraitPreset">Portrait</button>
+          <button class="preset-btn" onclick="loadPreset('landscape')" id="landscapePreset">Landscape</button>
+          <button class="preset-btn" onclick="loadPreset('artistic')" id="artisticPreset">Artistic</button>
+          <button class="preset-btn" onclick="loadPreset('photorealistic')" id="photorealisticPreset">Photorealistic</button>
+          <button class="preset-btn" onclick="loadPreset('anime')" id="animePreset">Anime</button>
+        </div>
+      </div>
+
+      <button id="runBtn">🚀 Generate Image</button>
+      <div id="output"></div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/presets.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
