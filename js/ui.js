@@ -110,3 +110,44 @@ function initializeForm() {
   document.getElementById('strengthValue').textContent = DEFAULT_VALUES.strength;
   document.getElementById('highNoiseFracValue').textContent = DEFAULT_VALUES.highNoiseFrac;
 }
+
+function openConfig() {
+  const modal = document.getElementById('configModal');
+  if (!modal) return;
+  const stored = localStorage.getItem(CONFIG_STORAGE_KEY);
+  if (stored) {
+    try {
+      const cfg = JSON.parse(stored);
+      document.getElementById('serviceSelect').value = cfg.service || 'runpod';
+      document.getElementById('runpodId').value = cfg.runpodId || '';
+      document.getElementById('runpodKey').value = cfg.runpodKey || '';
+    } catch (e) {
+      console.error('Failed to parse config', e);
+    }
+  }
+  modal.classList.remove('hidden');
+}
+
+function closeConfig() {
+  const modal = document.getElementById('configModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function initConfigUI() {
+  const btn = document.getElementById('configBtn');
+  const saveBtn = document.getElementById('saveConfig');
+  const closeBtn = document.getElementById('closeConfig');
+  if (btn) btn.addEventListener('click', openConfig);
+  if (closeBtn) closeBtn.addEventListener('click', closeConfig);
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      const cfg = {
+        service: document.getElementById('serviceSelect').value,
+        runpodId: document.getElementById('runpodId').value.trim(),
+        runpodKey: document.getElementById('runpodKey').value.trim()
+      };
+      saveConfig(cfg);
+      closeConfig();
+    });
+  }
+}
